@@ -1,0 +1,1 @@
+## Make stress for ubuntu by options from 20% to 90%
