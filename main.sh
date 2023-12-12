@@ -1,5 +1,14 @@
 #!/bin/bash
 
+# Function to check if stress is installed
+check_stress_installed() {
+    if ! command -v stress &> /dev/null
+    then
+        echo "The 'stress' program is not installed. Please install it before running this script."
+        exit 1
+    fi
+}
+
 # Function to display the menu
 show_menu() {
     echo "Choose the desired CPU load level for stress testing:"
@@ -32,6 +41,9 @@ perform_stress_test() {
     echo "Please open a new terminal and run 'htop' to monitor CPU usage."
     stress --cpu $num_workers
 }
+
+# Check if stress is installed
+check_stress_installed
 
 # Main loop
 while true; do
