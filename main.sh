@@ -1,11 +1,17 @@
 #!/bin/bash
 
-# Function to check if stress is installed
-check_stress_installed() {
-    if ! command -v stress &> /dev/null
-    then
-        echo "The 'stress' program is not installed. Please install it before running this script."
-        exit 1
+# Function to check if stress is installed and offer installation
+check_and_offer_stress_installation() {
+    if ! command -v stress &> /dev/null; then
+        read -p "The 'stress' program is not installed. Would you like to install it now? (yes/no): " answer
+        if [[ $answer == "yes" ]]; then
+            echo "Installing 'stress'. Please wait..."
+            # Assuming the use of a Debian-based system (e.g., Ubuntu)
+            sudo apt-get install stress
+        else
+            echo "The 'stress' program is required to run this script."
+            exit 1
+        fi
     fi
 }
 
@@ -25,8 +31,6 @@ perform_stress_test() {
     local load_level=$1
     local num_workers
 
-    # Approximate number of workers for each load level
-    # Note: These values are examples and should be calibrated for your specific system
     case $load_level in
         1) num_workers=2 ;;  # 20%
         2) num_workers=4 ;;  # 40%
@@ -36,14 +40,13 @@ perform_stress_test() {
         *) echo "Invalid selection"; exit 1 ;;
     esac
 
-    # Running stress command
     echo "Starting stress test with $num_workers workers to simulate approximately $load_level load level..."
     echo "Please open a new terminal and run 'htop' to monitor CPU usage."
     stress --cpu $num_workers
 }
 
-# Check if stress is installed
-check_stress_installed
+# Check if stress is installed or offer to install it
+check_and_offer_stress_installation
 
 # Main loop
 while true; do
